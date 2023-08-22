@@ -7,7 +7,7 @@ let offset = 0;
 
 function convertPokemonToLi(pokemon) {
     return `
-        <li class="pokemon ${pokemon.type}">
+        <li id="${pokemon.number}" class="pokemon ${pokemon.type}" data-pokemon='${JSON.stringify(pokemon)}'>
             <span class="number">#${pokemon.number}</span>
             <span class="name">${pokemon.name}</span>
 
@@ -45,3 +45,35 @@ loadMoreButton.addEventListener('click', () => {
         loadPokemonItens(offset, limit)
     }
 })
+
+function openPokemonModal(pokemon) {
+    console.log(pokemon);
+}
+
+
+pokemonList.addEventListener('click', function(event) {
+    const clickedPokemon = event.target.closest('.pokemon');
+    if (clickedPokemon) {
+        const pokemonData = JSON.parse(clickedPokemon.getAttribute('data-pokemon'));
+        const pokemonName = pokemonData.name.charAt(0).toUpperCase() + pokemonData.name.slice(1);
+        const modal = new bootstrap.Modal(document.getElementById('pokemonModal'));
+        const modalBody = document.getElementById('pokemonModalBody');
+        
+        modalBody.innerHTML = `
+            <div class="row">
+                <h2>${pokemonName} #${pokemonData.number}</h2>
+
+                <div class="col">
+                </br>
+                    <p>Abilities: ${pokemonData.abilities.join(', ')}</p>
+                    <p>Types: ${pokemonData.types.join(', ')}</p>
+                </div>
+                <div class="col">
+                    <img src="${pokemonData.photo}" alt="${pokemonData.name}">
+                </div>
+            </div>
+                `;
+
+        modal.show();
+    }
+});
